@@ -1,142 +1,107 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>IT Abyss Wiki</title>
-	<meta charset="utf-8">
+extends includes/layout.pug
 
-	<!-- 引入配置文件 -->
-	
-<link rel="stylesheet" href="/css/main.css">
+block top_img
+  - var top_img = page.top_img || theme.post_meta.top_img || theme.top_img || config.top_img
+  if (top_img && page.top_img !== false)
+    - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
+    - var flag = top_img === true ? 'no-bg' : ''
+    div#top-container(style=bg_img class=flag)
+      include ./includes/header.pug
+      #post-info
+        #post-title= page.title || _p('no_title')
+        #post-meta
+          if (theme.post_meta.date_type)
+            if (theme.post_meta.date_type === 'both')
+              time.post-meta__date
+                i.fa.fa-calendar(aria-hidden="true")
+                =' '+_p('post.created')+' '+date(page.date, config.date_format)
+                span.post-meta__separator |
+                i.fa.fa-calendar-check-o(aria-hidden="true")
+                =' '+_p('post.updated')+' '+date(page.updated, config.date_format)
+            else
+              - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
+              time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+          if (theme.post_meta.categories && page.categories.data.length > 0)
+            if (theme.post_meta.date_type)
+              span.post-meta__separator |
+            each item, index in page.categories.data
+              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
+              a(href=url_for(item.path)).post-meta__categories #[=item.name]
+              if (index < page.categories.data.length - 1)
+                 i.fa.fa-angle-right(aria-hidden="true")
+          if (theme.disqus.enable && theme.disqus.count)
+            if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+              span.post-meta__separator |
+            i.fa.fa-comment-o.post-meta__icon(aria-hidden="true")
+            a(href=url_for(page.path) + '#disqus_thread')
+              span.disqus-comment-count(data-disqus-identifier=page.path)
+          if (theme.wordcount && theme.wordcount.enable)
+            .post-meta-wordcount
+              span= _p('post.wordcount') + ': '
+              span.word-count= wordcount(page.content)
+              span.post-meta__separator |
+              span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+  else
+    div#top-container.plain
+      include ./includes/header.pug
 
-
-	<!-- 字体图片库 -->
-	
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
-
-
-	<!-- 代码高亮库 -->
-	
-<link rel="stylesheet" href="/lib/highlight/styles/atom-one-dark.css">
-
-	
-<meta name="generator" content="Hexo 5.1.1"></head>
-<body>
-
-	<div id="main">
-		<!-- 引入侧边栏 -->
-		<aside>
-			<!-- 搜索栏 -->
-<div id="search">
-	<input class="search-input" type="text" placeholder="search">
-	<i id="search-icon" class="fa fa-bars" title="切换目录与索引">
-</div>
-
-<!-- 侧边目录栏 -->
-<div id="tree">
-	
-
-	
-					<ul>
-						<li class="file active">
-							<a href="/2020/09/13/hello-world/">
-								<i class="fa fa-file"></i>
-								hello-world
-							</a>
-						</li>
-					</ul>
-	
-</div>
-
-
-<!-- 最尾部添加，这里就不列以前的代码了 -->
-<div id="toc" style="display: none;"></div>
-
-		</aside>
-
-		<!-- 引入导航 -->
-		<nav>
-			<ul id="menu">
-	
-	
-    <li class="menu-item">
-        <a href="/" class="menu-item-link">主页</a>
-    </li>
-    
-    <li class="menu-item">
-        <a href="/about" class="menu-item-link">关于</a>
-    </li>
-    
-
-    
-    
-    <li class="menu-item">
-        <a href="https://www.cnblogs.com/yyhh/" class="menu-item-link" target="_blank">博客园</a>
-    </li>
-    
-    <li class="menu-item">
-        <a href="https://github.com" class="menu-item-link" target="_blank">github</a>
-    </li>
-    
-
-</ul>
-
-		</nav>
-
-		<!-- 引入正文 -->
-		<div id="content">
-			<div>
-	<span id="post-author">猴子请来的救兵</span>
-	<span id="post-date">2020-09-13 14:21:02</span>
-</div>
-
-<div id="article">
-	<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="login-jsp"><a href="#login-jsp" class="headerlink" title="login.jsp"></a>login.jsp</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$ login.jsp</span><br><span class="line">&lt;%@ page language=<span class="string">&quot;java&quot;</span> contentType=<span class="string">&quot;text/html; charset=UTF-8&quot;</span></span><br><span class="line">    pageEncoding=<span class="string">&quot;UTF-8&quot;</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=<span class="string">&quot;UTF-8&quot;</span>&gt;</span><br><span class="line">&lt;title&gt;Insert title here&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">	&lt;form action=<span class="string">&quot;check.jsp&quot;</span> method=<span class="string">&quot;post&quot;</span>&gt;</span><br><span class="line">	用户名：&lt;input <span class="built_in">type</span>=<span class="string">&quot;text&quot;</span> name=<span class="string">&quot;uname&quot;</span>&gt;&lt;br/&gt;</span><br><span class="line">	密码： &lt;input <span class="built_in">type</span>=<span class="string">&quot;password&quot;</span>name=<span class="string">&quot;pwd&quot;</span>&gt;&lt;br/&gt;</span><br><span class="line">	&lt;input <span class="built_in">type</span>=<span class="string">&quot;submit&quot;</span> value=<span class="string">&quot;登录&quot;</span>&gt;&lt;br/&gt;</span><br><span class="line">	&lt;/form&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="success-jsp"><a href="#success-jsp" class="headerlink" title="success.jsp"></a>success.jsp</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ success.jsp</span><br><span class="line">&lt;%@ page language=<span class="string">&quot;java&quot;</span> contentType=<span class="string">&quot;text/html; charset=UTF-8&quot;</span></span><br><span class="line">    pageEncoding=<span class="string">&quot;UTF-8&quot;</span>%&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=<span class="string">&quot;UTF-8&quot;</span>&gt;</span><br><span class="line">&lt;title&gt;Insert title here&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">	成功登录&lt;br/&gt;</span><br><span class="line">	&lt;%</span><br><span class="line">	</span><br><span class="line">	String name=request.getParameter(<span class="string">&quot;uname&quot;</span>);</span><br><span class="line">	%&gt;</span><br><span class="line">	&lt;%=<span class="string">&quot;欢迎您！&quot;</span>+name %&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="搭建博客"><a href="#搭建博客" class="headerlink" title="搭建博客"></a>搭建博客</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>— #安装Nodejs<br>node -v #查看node版本<br>npm -v #查看npm版本<br>npm install -g cnpm –registry=<a target="_blank" rel="noopener" href="http://registry.npm.taobao.org/">http://registry.npm.taobao.org</a> #安装淘宝的cnpm 管理器<br>cnpm -v #查看cnpm版本<br>cnpm install -g hexo-cli #安装hexo框架<br>hexo -v #查看hexo版本<br>mkdir blog #创建blog目录<br>cd blog #进入blog目录<br>sudo hexo init #生成博客 初始化博客<br>hexo s #启动本地博客服务<br><a target="_blank" rel="noopener" href="http://localhost:4000/">http://localhost:4000/</a> #本地访问地址<br>hexo n “我的第一篇文章” #创建新的文章<br>#返回blog目录<br>hexo clean #清理<br>hexo g #生成<br>#Github创建一个新的仓库 YourGithubName.github.io<br>cnpm install –save hexo-deployer-git #在blog目录下安装git部署插件<br>-—<br>#配置_config.yml<br>-—-<br># Deployment<br>## Docs: <a target="_blank" rel="noopener" href="https://hexo.io/docs/deployment.html">https://hexo.io/docs/deployment.html</a><br>deploy:<br>type: git<br>repo: <a target="_blank" rel="noopener" href="https://github.com/YourGithubName/YourGithubName.github.io.git">https://github.com/YourGithubName/YourGithubName.github.io.git</a><br>branch: master<br>-—-<br>hexo d #部署到Github仓库里<br><a target="_blank" rel="noopener" href="https://yourgithubname.github.io/">https://YourGithubName.github.io/</a> #访问这个地址可以查看博客</p>
-<p>git clone <a target="_blank" rel="noopener" href="https://github.com/litten/hexo-theme-yilia.git">https://github.com/litten/hexo-theme-yilia.git</a> themes/yilia #下载yilia主题到本地</p>
-<p>#修改hexo根目录下的 _config.yml 文件 ： theme: yilia</p>
-<p>hexo c #清理一下<br>hexo g #生成<br>hexo d #部署到远程Github仓库<br><a target="_blank" rel="noopener" href="https://yourgithubname.github.io/">https://YourGithubName.github.io/</a> #查看博客</p>
-
-</div>
-
-		</div>
-		
-	</div>
-
-	<!-- 引入代码高亮的 js -->
-	
-<script src="/lib/highlight/highlight.pack.js"></script>
-
-
-	<!-- 引入 jquery -->
-	
-<script src="/lib/jquery-3.4.1.min.js"></script>
-
-
-	<!-- 引入 pjax -->
-	
-<script src="/lib/jquery.pjax.js"></script>
-
-	
-	<!-- 引入 js 文件 -->
-	
-<script src="/js/main.js"></script>
-
-
-	<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.0.4/lib/L2Dwidget.min.js"></script>
-	<script type="text/javascript">
-	L2Dwidget.init();
-	</script>
-
-</body>
-</html>
+block content
+  article#post(class="")
+    if (!top_img)
+      #post-title.plain= page.title || _p('no_title')
+      #post-meta
+        if (theme.post_meta.date_type)
+          - var date_type = theme.post_meta.date_type === 'updated' ? '' : 'date'
+          time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+        if (theme.post_meta.categories && page.categories.data.length > 0)
+          if (theme.post_meta.date_type)
+            span.post-meta__separator |
+          each item, index in page.categories.data
+            i.fa.fa-inbox(aria-hidden="true")
+            a(href=url_for(item.path)).post-meta__categories  #[=item.name]
+            if (index < page.categories.data.length - 1)
+                i.fa.fa-angle-right.post-meta__separator(aria-hidden="true")
+        if (theme.disqus.enable && theme.disqus.count)
+          if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+            span.post-meta__separator |
+          i.fa.fa-comment-o(aria-hidden="true")
+          a(href=url_for(page.path) + '#disqus_thread')
+            span.disqus-comment-count(data-disqus-identifier=page.path)
+        if (theme.wordcount && theme.wordcount.enable)
+          span.post-meta__separator |
+          span.post-meta-wordcount
+            span= _p('post.wordcount') + ': '
+            span.word-count= wordcount(page.content)
+            span.post-meta__separator |
+            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+    #post-content.article-container!= page.content
+  if (theme.post_copyright && theme.post_copyright.enable)
+    .post-copyright
+      .post-copyright__author
+        span.post-copyright-meta= _p('post.copyright.author') + ": "
+        span.post-copyright-info
+          a(href=`mailto:${config.email}`) #[=config.author]
+      .post-copyright__type
+        span.post-copyright-meta= _p('post.copyright.link') + ": "
+        span.post-copyright-info
+          a(href=url_for(page.permalink)) #[=page.permalink]
+      .post-copyright__notice
+        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
+  if (theme.post_meta.tags)
+    .post-meta__tag-list
+      each item, index in page.tags.data
+        a(href=url_for(item.path)).post-meta__tags #[=item.name]
+  if (theme.QR_code)
+    if (theme.QR_code.length > 0)
+      .post-qr-code
+        each item in theme.QR_code
+          .post-qr-code-item
+            img.post-qr-code__img(src=(item.itemlist||item).img)
+            .post-qr-code__desc=(item.itemlist||item).text
+  include includes/share/index.pug
+  include includes/pagination.pug
+  if (theme.adv && theme.adv.enable)
+    .post-adv!= theme.adv.info
+  if page.comments !== false
+    include includes/comments/index.pug
