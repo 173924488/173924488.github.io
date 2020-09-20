@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+     
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-clobJDBC"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+     
+    <div class="article-meta">
+      <a href="/2020/09/14/clobJDBC/" class="article-date">
+  <time datetime="2020-09-14T00:57:10.995Z" itemprop="datePublished">2020-09-14</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">3.3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">19 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h3 id="1-JDBC处理大文本CLOB-和二进制文本BLOB类型数据"><a href="#1-JDBC处理大文本CLOB-和二进制文本BLOB类型数据" class="headerlink" title="1.JDBC处理大文本CLOB 和二进制文本BLOB类型数据"></a>1.JDBC处理大文本CLOB 和二进制文本BLOB类型数据</h3><h4 id="创建数据库-mynoval"><a href="#创建数据库-mynoval" class="headerlink" title="创建数据库:mynoval"></a>创建数据库:mynoval</h4><hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create table mynoval(id numeric primary key,noval longtext);</span><br></pre></td></tr></table></figure>
+
+<p><img src="file:///C:\Users\longxuan\AppData\Local\Temp\ksohtml13236\wps1.jpg" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line">package demo;</span><br><span class="line"></span><br><span class="line">import java.io.File;</span><br><span class="line">import java.io.FileInputStream;</span><br><span class="line">import java.io.FileWriter;</span><br><span class="line">import java.io.InputStream;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.io.Reader;</span><br><span class="line">import java.io.Writer;</span><br><span class="line">import java.sql.Connection;</span><br><span class="line">import java.sql.DriverManager;</span><br><span class="line">import java.sql.PreparedStatement;</span><br><span class="line">import java.sql.ResultSet;</span><br><span class="line">import java.sql.SQLException;</span><br><span class="line"></span><br><span class="line">public class jdbcCLOB &#123;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		&#x2F;&#x2F;clobdemo();</span><br><span class="line">		readclobdemo();</span><br><span class="line">	&#125;</span><br><span class="line">	public static void clobdemo()&#123;</span><br><span class="line">		Connection connection&#x3D;null;</span><br><span class="line">		PreparedStatement pstmt&#x3D;null;</span><br><span class="line">		String URL&#x3D;&quot;jdbc:mysql:&#x2F;&#x2F;127.0.0.1:3306&#x2F;learning?serverTimezone&#x3D;UCT&quot;;</span><br><span class="line">		String USERNAME&#x3D;&quot;root&quot;;</span><br><span class="line">		String PWD&#x3D;&quot;88888888&quot;;</span><br><span class="line">		try &#123;</span><br><span class="line">			Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span><br><span class="line">			connection&#x3D;DriverManager.getConnection(URL,USERNAME,PWD);</span><br><span class="line">			String sql&#x3D;&quot;insert into mynoval(id,noval) values(?,?);&quot;;&#x2F;&#x2F;32,&#39;xuanmm&#39;,003</span><br><span class="line">			pstmt&#x3D; connection.prepareStatement(sql);</span><br><span class="line">			pstmt.setInt(1, 1);</span><br><span class="line">			&#x2F;&#x2F;设置CLOB:通过setCharacterStream设置</span><br><span class="line">			File file&#x3D;new File(&quot;D:\\Desktop\\learning\\JSP学习\\Jαva Web\\JαvaWeb-1\\6jdbc\\JDBCProject\\src\\小说.txt&quot;);</span><br><span class="line">			InputStream in &#x3D;new FileInputStream(file);</span><br><span class="line">			Reader reader&#x3D;new InputStreamReader(in,&quot;UTF-8&quot;);</span><br><span class="line">			pstmt.setCharacterStream(2, reader,(int)file.length());</span><br><span class="line">			int count&#x3D;pstmt.executeUpdate();</span><br><span class="line">			System.out.println(count&gt;0?&quot;插入成功&quot;+count:&quot;插入失败&quot;);</span><br><span class="line">			reader.close();</span><br><span class="line">		&#125;catch(Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;finally &#123;</span><br><span class="line">			</span><br><span class="line">			try &#123;</span><br><span class="line">				if(pstmt!&#x3D;null) &#123;</span><br><span class="line">					pstmt.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">			try &#123;</span><br><span class="line">				if(connection!&#x3D;null) &#123;</span><br><span class="line">					connection.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				System.out.println(&quot;e.printStackTrace();&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void readclobdemo()&#123;</span><br><span class="line">		Connection connection&#x3D;null;</span><br><span class="line">		PreparedStatement pstmt&#x3D;null;</span><br><span class="line">		String URL&#x3D;&quot;jdbc:mysql:&#x2F;&#x2F;127.0.0.1:3306&#x2F;learning?serverTimezone&#x3D;UCT&quot;;</span><br><span class="line">		String USERNAME&#x3D;&quot;root&quot;;</span><br><span class="line">		String PWD&#x3D;&quot;88888888&quot;;</span><br><span class="line">		ResultSet rs&#x3D;null;</span><br><span class="line">		try &#123;</span><br><span class="line">			Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span><br><span class="line">			connection&#x3D;DriverManager.getConnection(URL,USERNAME,PWD);</span><br><span class="line">			String sql&#x3D;&quot;select noval from mynoval where id&#x3D;?;&quot;;&#x2F;&#x2F;32,&#39;xuanmm&#39;,003</span><br><span class="line">			pstmt&#x3D; connection.prepareStatement(sql);</span><br><span class="line">			pstmt.setInt(1, 1);</span><br><span class="line">			rs &#x3D; pstmt.executeQuery();</span><br><span class="line">			while(rs.next()) &#123;</span><br><span class="line">				&#x2F;&#x2F;将cloc类型的数据  保存到Reader对象中</span><br><span class="line">				Reader reader &#x3D; rs.getCharacterStream(&quot;noval&quot;);</span><br><span class="line">				Writer write &#x3D; new FileWriter(&quot;src&#x2F;Writer.txt&quot;);</span><br><span class="line">				char[] c &#x3D; new char[100];</span><br><span class="line">				int len&#x3D;-1;</span><br><span class="line">				while((len&#x3D;reader.read(c))!&#x3D;-1) &#123;</span><br><span class="line">					write.write(c,0,len);&#x2F;&#x2F;reader.read(c)读取到的长度</span><br><span class="line">				&#125;</span><br><span class="line">				write.close();</span><br><span class="line">				reader.close();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;catch(Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;finally &#123;</span><br><span class="line">			</span><br><span class="line">			try &#123;</span><br><span class="line">				if(pstmt!&#x3D;null) &#123;</span><br><span class="line">					pstmt.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">			try &#123;</span><br><span class="line">				if(connection!&#x3D;null) &#123;</span><br><span class="line">					connection.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				System.out.println(&quot;e.printStackTrace();&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-BLOB"><a href="#2-BLOB" class="headerlink" title="2.BLOB"></a>2.BLOB</h3><h4 id="创建数据库：mymovie"><a href="#创建数据库：mymovie" class="headerlink" title="创建数据库：mymovie"></a>创建数据库：mymovie</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create table mymusic(id numeric primary key,music longblob);</span><br></pre></td></tr></table></figure>
+
+<h4 id="jdbcBLOB-java"><a href="#jdbcBLOB-java" class="headerlink" title="jdbcBLOB.java"></a>jdbcBLOB.java</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line">package demo;</span><br><span class="line"></span><br><span class="line">import java.io.File;</span><br><span class="line">import java.io.FileInputStream;</span><br><span class="line">import java.io.FileOutputStream;</span><br><span class="line">import java.io.FileWriter;</span><br><span class="line">import java.io.InputStream;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.io.OutputStream;</span><br><span class="line">import java.io.Reader;</span><br><span class="line">import java.io.Writer;</span><br><span class="line">import java.sql.Connection;</span><br><span class="line">import java.sql.DriverManager;</span><br><span class="line">import java.sql.PreparedStatement;</span><br><span class="line">import java.sql.ResultSet;</span><br><span class="line">import java.sql.SQLException;</span><br><span class="line"></span><br><span class="line">public class jdbcBLOB &#123;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		&#x2F;&#x2F;writeblobdemo();</span><br><span class="line">		readblobdemo();</span><br><span class="line">	&#125;</span><br><span class="line">	public static void writeblobdemo()&#123;</span><br><span class="line">		Connection connection&#x3D;null;</span><br><span class="line">		PreparedStatement pstmt&#x3D;null;</span><br><span class="line">		String URL&#x3D;&quot;jdbc:mysql:&#x2F;&#x2F;127.0.0.1:3306&#x2F;learning?serverTimezone&#x3D;UCT&quot;;</span><br><span class="line">		String USERNAME&#x3D;&quot;root&quot;;</span><br><span class="line">		String PWD&#x3D;&quot;88888888&quot;;</span><br><span class="line">		try &#123;</span><br><span class="line">			Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span><br><span class="line">			connection&#x3D;DriverManager.getConnection(URL,USERNAME,PWD);</span><br><span class="line">			String sql&#x3D;&quot;insert into mymusic(id,music) values(?,?);&quot;;&#x2F;&#x2F;32,&#39;xuanmm&#39;,003</span><br><span class="line">			pstmt&#x3D; connection.prepareStatement(sql);</span><br><span class="line">			pstmt.setInt(1, 2);</span><br><span class="line">			&#x2F;&#x2F;设置CLOB:通过setCharacterStream设置</span><br><span class="line">			File file&#x3D;new File(&quot;D:\\Desktop\\learning\\JSP学习\\Jαva Web\\JαvaWeb-1\\6jdbc\\JDBCProject\\src\\music.mp3&quot;);</span><br><span class="line">			InputStream in &#x3D;new FileInputStream(file);</span><br><span class="line">			pstmt.setBinaryStream(2, in,(int)file.length());</span><br><span class="line">			int count&#x3D;pstmt.executeUpdate();</span><br><span class="line">			System.out.println(count&gt;0?&quot;插入成功&quot;+count:&quot;插入失败&quot;);</span><br><span class="line">		&#125;catch(Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;finally &#123;</span><br><span class="line">			</span><br><span class="line">			try &#123;</span><br><span class="line">				if(pstmt!&#x3D;null) &#123;</span><br><span class="line">					pstmt.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">			try &#123;</span><br><span class="line">				if(connection!&#x3D;null) &#123;</span><br><span class="line">					connection.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				System.out.println(&quot;e.printStackTrace();&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public static void readblobdemo()&#123;</span><br><span class="line">		Connection connection&#x3D;null;</span><br><span class="line">		PreparedStatement pstmt&#x3D;null;</span><br><span class="line">		String URL&#x3D;&quot;jdbc:mysql:&#x2F;&#x2F;127.0.0.1:3306&#x2F;learning?serverTimezone&#x3D;UCT&quot;;</span><br><span class="line">		String USERNAME&#x3D;&quot;root&quot;;</span><br><span class="line">		String PWD&#x3D;&quot;88888888&quot;;</span><br><span class="line">		ResultSet rs&#x3D;null;</span><br><span class="line">		try &#123;</span><br><span class="line">			Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span><br><span class="line">			connection&#x3D;DriverManager.getConnection(URL,USERNAME,PWD);</span><br><span class="line">			String sql&#x3D;&quot;select music from mymusic where id&#x3D;?;&quot;;&#x2F;&#x2F;32,&#39;xuanmm&#39;,003</span><br><span class="line">			pstmt&#x3D; connection.prepareStatement(sql);</span><br><span class="line">			pstmt.setInt(1, 2);</span><br><span class="line">			rs &#x3D; pstmt.executeQuery();</span><br><span class="line">			while(rs.next()) &#123;</span><br><span class="line">				&#x2F;&#x2F;将cloc类型的数据  保存到Reader对象中</span><br><span class="line">				&#x2F;&#x2F;Reader reader &#x3D; rs.getCharacterStream(&quot;noval&quot;);</span><br><span class="line">				InputStream in &#x3D; rs.getBinaryStream(&quot;music&quot;);</span><br><span class="line">				OutputStream out &#x3D; new FileOutputStream(&quot;src&#x2F;Writemusic.mp3&quot;);</span><br><span class="line">				byte[] c &#x3D; new byte[100];</span><br><span class="line">				&#x2F;&#x2F;Writer write &#x3D; new FileWriter(&quot;src&#x2F;Writer.txt&quot;);</span><br><span class="line">				&#x2F;&#x2F;char[] c &#x3D; new char[100];</span><br><span class="line">				int len&#x3D;-1;</span><br><span class="line">				while((len&#x3D;in.read(c))!&#x3D;-1) &#123;</span><br><span class="line">					out.write(c,0,len);&#x2F;&#x2F;reader.read(c)读取到的长度</span><br><span class="line">				&#125;</span><br><span class="line">				out.close();</span><br><span class="line">				in.close();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;catch(Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;finally &#123;</span><br><span class="line">			</span><br><span class="line">			try &#123;</span><br><span class="line">				if(pstmt!&#x3D;null) &#123;</span><br><span class="line">					pstmt.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">			try &#123;</span><br><span class="line">				if(connection!&#x3D;null) &#123;</span><br><span class="line">					connection.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				System.out.println(&quot;e.printStackTrace();&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>blob:二进制  字节流 InputStream OutputStream<br>与CLOB步骤基本一致，区别：setBinaryStream(…)  getBinaryStream(…)</p>
+<h3 id="3-JSP登录验证："><a href="#3-JSP登录验证：" class="headerlink" title="3.JSP登录验证："></a>3.JSP登录验证：</h3><h4 id="login-jsp"><a href="#login-jsp" class="headerlink" title="login.jsp"></a>login.jsp</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language&#x3D;&quot;java&quot; contentType&#x3D;&quot;text&#x2F;html; charset&#x3D;UTF-8&quot;</span><br><span class="line">    pageEncoding&#x3D;&quot;UTF-8&quot;%&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">&lt;title&gt;这是heck.jsp&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">	&lt;form action&#x3D;&quot;check.jsp&quot; method&#x3D;&quot;post&quot;&gt;</span><br><span class="line">	用户名：&lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;uname&quot;&gt;&lt;br&#x2F;&gt;</span><br><span class="line">	密码： &lt;input type&#x3D;&quot;password&quot;name&#x3D;&quot;upwd&quot;&gt;&lt;br&#x2F;&gt;</span><br><span class="line">	&lt;input type&#x3D;&quot;submit&quot; value&#x3D;&quot;登录&quot;&gt;&lt;br&#x2F;&gt;</span><br><span class="line">	&lt;&#x2F;form&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>check.jsp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language&#x3D;&quot;java&quot; contentType&#x3D;&quot;text&#x2F;html; charset&#x3D;UTF-8&quot;    pageEncoding&#x3D;&quot;UTF-8&quot;%&gt;</span><br><span class="line">&lt;%@ page import&#x3D;&quot;java.sql.*&quot;%&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">&lt;title&gt;这是check.jsp&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">		&lt;%</span><br><span class="line">		Connection connection&#x3D;null;</span><br><span class="line">		Statement stmt&#x3D;null;</span><br><span class="line">		ResultSet result&#x3D;null;</span><br><span class="line">		String URL&#x3D;&quot;jdbc:mysql:&#x2F;&#x2F;127.0.0.1:3306&#x2F;learning?serverTimezone&#x3D;UCT&quot;;</span><br><span class="line">		String USERNAME&#x3D;&quot;root&quot;;</span><br><span class="line">		String PWD&#x3D;&quot;88888888&quot;;</span><br><span class="line">		try &#123;</span><br><span class="line">			Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span><br><span class="line">			connection&#x3D;DriverManager.getConnection(URL,USERNAME,PWD);</span><br><span class="line">			stmt&#x3D;connection.createStatement();</span><br><span class="line">			</span><br><span class="line">			request.setCharacterEncoding(&quot;utf-8&quot;);</span><br><span class="line">			String name&#x3D;request.getParameter(&quot;uname&quot;);</span><br><span class="line">			String pwd&#x3D;request.getParameter(&quot;upwd&quot;);</span><br><span class="line">			if(&quot;xuan&quot;.equals(name)&amp;&amp;&quot;12&quot;.equals(pwd))&#123;</span><br><span class="line">				&#x2F;&#x2F;页面跳转，重定向，导致数据丢失</span><br><span class="line">				&#x2F;&#x2F;response.sendRedirect(&quot;success.jsp&quot;);</span><br><span class="line">				&#x2F;&#x2F;页面跳转:请求转发，可以获取到数据，并且地址栏没有改变</span><br><span class="line">				&#x2F;&#x2F;request.getRequestDispatcher(&quot;success.jsp&quot;).forward(request,response);</span><br><span class="line">				out.print(&quot;登录成功..&quot;);</span><br><span class="line">			&#125;else&#123;</span><br><span class="line">				out.print(&quot;登录失败&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			&#x2F;&#x2F;String sql&#x3D;&quot; insert into new_student(sno,sname,cno) values(12,&#39;xuan&#39;,001);&quot;;</span><br><span class="line">			String sql&#x3D;&quot;select * from new_student where sname&#x3D;&#39;&quot;+name+&quot;&#39;and sno&#x3D;&quot;+pwd+&quot;;&quot;;</span><br><span class="line">			&#x2F;&#x2F;等价与上方代码：String sql&#x3D;&quot;select * from new_student where sname&#x3D;&#39;&quot;+name+&quot;&#39;and sno&#x3D;&#39;&quot;+pwd+&quot;&#39;;&quot;;</span><br><span class="line">			result&#x3D;stmt.executeQuery(sql);</span><br><span class="line">			while(result.next()) &#123;</span><br><span class="line">				String sname&#x3D;result.getString(&quot;sname&quot;);</span><br><span class="line">				int cno&#x3D;result.getInt(&quot;cno&quot;);</span><br><span class="line">				out.println(&quot;sname&#x3D;&quot;+sname+&quot; cno&#x3D;&quot;+cno+&quot;&lt;br&#x2F;&gt;&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;catch(Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;finally &#123;</span><br><span class="line">			</span><br><span class="line">			try &#123;</span><br><span class="line">				if(result!&#x3D;null) &#123;</span><br><span class="line">					result.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">			try &#123;</span><br><span class="line">				if(connection!&#x3D;null) &#123;</span><br><span class="line">					connection.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				System.out.println(&quot;e.printStackTrace();&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		</span><br><span class="line">		%&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-JSP登陆验证改进–》引出JavaBean"><a href="#4-JSP登陆验证改进–》引出JavaBean" class="headerlink" title="4.JSP登陆验证改进–》引出JavaBean"></a>4.JSP登陆验证改进–》引出JavaBean</h3><h4 id="login-jsp-1"><a href="#login-jsp-1" class="headerlink" title="login.jsp"></a>login.jsp</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language&#x3D;&quot;java&quot; contentType&#x3D;&quot;text&#x2F;html; charset&#x3D;UTF-8&quot;</span><br><span class="line">    pageEncoding&#x3D;&quot;UTF-8&quot;%&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">&lt;title&gt;这是heck.jsp&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">	&lt;form action&#x3D;&quot;check.jsp&quot; method&#x3D;&quot;post&quot;&gt;</span><br><span class="line">	用户名：&lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;uname&quot;&gt;&lt;br&#x2F;&gt;</span><br><span class="line">	密码： &lt;input type&#x3D;&quot;password&quot;name&#x3D;&quot;upwd&quot;&gt;&lt;br&#x2F;&gt;</span><br><span class="line">	&lt;input type&#x3D;&quot;submit&quot; value&#x3D;&quot;登录&quot;&gt;&lt;br&#x2F;&gt;</span><br><span class="line">	&lt;&#x2F;form&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h4 id="check-jsp"><a href="#check-jsp" class="headerlink" title="check.jsp"></a>check.jsp</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language&#x3D;&quot;java&quot; contentType&#x3D;&quot;text&#x2F;html; charset&#x3D;UTF-8&quot;    pageEncoding&#x3D;&quot;UTF-8&quot;%&gt;</span><br><span class="line">&lt;%@ page import&#x3D;&quot;jspdemo.loginDao&quot; %&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">&lt;title&gt;这是check.jsp&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">		&lt;%</span><br><span class="line">			request.setCharacterEncoding(&quot;utf-8&quot;);</span><br><span class="line">				String name&#x3D;request.getParameter(&quot;uname&quot;);</span><br><span class="line">				String pwd&#x3D;request.getParameter(&quot;upwd&quot;);</span><br><span class="line">				loginDao Dao&#x3D;new jspdemo.loginDao();</span><br><span class="line">				int result &#x3D; Dao.login(name,pwd);</span><br><span class="line">				out.print(&quot;result&#x3D;&quot;+result);</span><br><span class="line">		%&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="loginDao-java"><a href="#loginDao-java" class="headerlink" title="loginDao.java"></a>loginDao.java</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">package jspdemo;</span><br><span class="line">import java.sql.*;</span><br><span class="line">public class loginDao &#123;</span><br><span class="line">	public int login(String name,String pwd) &#123;</span><br><span class="line">		</span><br><span class="line">		Connection connection&#x3D;null;</span><br><span class="line">		Statement stmt&#x3D;null;</span><br><span class="line">		ResultSet result&#x3D;null;</span><br><span class="line">		String URL&#x3D;&quot;jdbc:mysql:&#x2F;&#x2F;127.0.0.1:3306&#x2F;learning?serverTimezone&#x3D;UCT&quot;;</span><br><span class="line">		String USERNAME&#x3D;&quot;root&quot;;</span><br><span class="line">		String PWD&#x3D;&quot;88888888&quot;;</span><br><span class="line">		try &#123;</span><br><span class="line">			Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span><br><span class="line">			connection&#x3D;DriverManager.getConnection(URL,USERNAME,PWD);</span><br><span class="line">			stmt&#x3D;connection.createStatement();	</span><br><span class="line">			&#x2F;&#x2F;String sql&#x3D;&quot; insert into new_student(sno,sname,cno) values(12,&#39;xuan&#39;,001);&quot;;</span><br><span class="line">			String sql&#x3D;&quot;select * from new_student where sname&#x3D;&#39;&quot;+name+&quot;&#39;and sno&#x3D;&quot;+pwd+&quot;;&quot;;</span><br><span class="line">			&#x2F;&#x2F;等价与上方代码：String sql&#x3D;&quot;select * from new_student where sname&#x3D;&#39;&quot;+name+&quot;&#39;and sno&#x3D;&#39;&quot;+pwd+&quot;&#39;;&quot;;</span><br><span class="line">			result&#x3D;stmt.executeQuery(sql);</span><br><span class="line">			int count&#x3D;-1;</span><br><span class="line">			while(result.next()) &#123;</span><br><span class="line">				String sname&#x3D;result.getString(&quot;sname&quot;);</span><br><span class="line">				int cno&#x3D;result.getInt(&quot;cno&quot;);</span><br><span class="line">				&#x2F;&#x2F;out.println(&quot;sname&#x3D;&quot;+sname+&quot; cno&#x3D;&quot;+cno+&quot;&lt;br&#x2F;&gt;&quot;);</span><br><span class="line">				count&#x3D;result.getInt(1);</span><br><span class="line">			&#125;</span><br><span class="line">			return count;</span><br><span class="line"></span><br><span class="line">		&#125;catch(Exception e) &#123;</span><br><span class="line">			return -1;</span><br><span class="line">		&#125;finally &#123;</span><br><span class="line">			</span><br><span class="line">			try &#123;</span><br><span class="line">				if(result!&#x3D;null) &#123;</span><br><span class="line">					result.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				return -1;</span><br><span class="line">			&#125;</span><br><span class="line">			try &#123;</span><br><span class="line">				if(connection!&#x3D;null) &#123;</span><br><span class="line">					connection.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;catch(SQLException e) &#123;</span><br><span class="line">				return -1;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-servlet"><a href="#5-servlet" class="headerlink" title="5.servlet"></a>5.servlet</h3><h5 id="servet2-5Project-WebContent-WEB-INF-web-xml"><a href="#servet2-5Project-WebContent-WEB-INF-web-xml" class="headerlink" title="/servet2.5Project/WebContent/WEB-INF/web.xml"></a>/servet2.5Project/WebContent/WEB-INF/web.xml</h5><?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>servet2.5Project</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+      <servlet-name>welcomeservlet</servlet-name>
+      <servlet-class>org.servlet.welcomeservlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>welcomeservlet</servlet-name>
+      <url-pattern>/welcomeservlet</url-pattern>
+  </servlet-mapping>
+</web-app>
+
+
+
+<h4 id="welcomeservlet-java"><a href="#welcomeservlet-java" class="headerlink" title="welcomeservlet.java"></a>welcomeservlet.java</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">package org.servlet;</span><br><span class="line">import java.io.IOException;</span><br><span class="line"></span><br><span class="line">import javax.servlet.ServletException;</span><br><span class="line">import javax.servlet.http.HttpServlet;</span><br><span class="line">import javax.servlet.http.HttpServletRequest;</span><br><span class="line">import javax.servlet.http.HttpServletResponse;</span><br><span class="line">public class welcomeservlet extends HttpServlet&#123;</span><br><span class="line">	 protected void doGet(HttpServletRequest req,HttpServletResponse resq) throws ServletException, IOException &#123;</span><br><span class="line">		 System.out.println(&quot;doGet()方法&quot;);</span><br><span class="line">	 &#125;</span><br><span class="line">	 protected void doPost(HttpServletRequest req,HttpServletResponse resq) throws ServletException, IOException &#123;</span><br><span class="line">		 &#x2F;&#x2F;System.out.println(&quot;doPose()方法&quot;);</span><br><span class="line">		 this.doGet(req, resq);</span><br><span class="line">	 &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="index-jsp"><a href="#index-jsp" class="headerlink" title="index.jsp"></a>index.jsp</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language&#x3D;&quot;java&quot; contentType&#x3D;&quot;text&#x2F;html; charset&#x3D;UTF-8&quot;</span><br><span class="line">    pageEncoding&#x3D;&quot;UTF-8&quot;%&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">&lt;title&gt;Insert title here&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">	&lt;a href&#x3D;&quot;welcomeservlet&quot;&gt;&lt;&#x2F;a&gt;</span><br><span class="line">	&lt;form action&#x3D;&quot;welcomeservlet&quot; method&#x3D;&quot;post&quot;&gt;</span><br><span class="line">	&lt;input type&#x3D;&quot;submit&quot;&gt;</span><br><span class="line">	&lt;&#x2F;form&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="6-MVC三层模型"><a href="#6-MVC三层模型" class="headerlink" title="6.MVC三层模型"></a>6.MVC三层模型</h4><p>结构：</p>
+<p><img src="C:\Users\longxuan\AppData\Roaming\Typora\typora-user-images\image-20200914232116214.png" alt="image-20200914232116214"></p>
+<h5 id="login-jsp-2"><a href="#login-jsp-2" class="headerlink" title="login.jsp"></a>login.jsp</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language&#x3D;&quot;java&quot; contentType&#x3D;&quot;text&#x2F;html; charset&#x3D;UTF-8&quot;</span><br><span class="line">    pageEncoding&#x3D;&quot;UTF-8&quot;%&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">&lt;title&gt;Insert title here&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">	&lt;form action&#x3D;&quot;loginServlet&quot; method&#x3D;&quot;post&quot;&gt;</span><br><span class="line">	登录 &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;name&quot;&gt;&lt;br&#x2F;&gt;</span><br><span class="line">	密码&lt;input type&#x3D;&quot;password&quot; name&#x3D;&quot;pwd&quot;&gt;&lt;br&#x2F;&gt;</span><br><span class="line">	&lt;input type&#x3D;&quot;submit&quot; value&#x3D;&quot;提交&quot;&gt;</span><br><span class="line">	&lt;&#x2F;form&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="welcome-jsp"><a href="#welcome-jsp" class="headerlink" title="welcome.jsp"></a>welcome.jsp</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page language&#x3D;&quot;java&quot; contentType&#x3D;&quot;text&#x2F;html; charset&#x3D;UTF-8&quot;</span><br><span class="line">    pageEncoding&#x3D;&quot;UTF-8&quot;%&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">&lt;title&gt;Insert title here&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">	登陆成功</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="Login-java"><a href="#Login-java" class="headerlink" title="Login.java"></a>Login.java</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">package entity;</span><br><span class="line"></span><br><span class="line">public class Login &#123;</span><br><span class="line">	private int cno;</span><br><span class="line">	private String sname;</span><br><span class="line">	private String pwd;</span><br><span class="line">	public int getCno() &#123;</span><br><span class="line">		return cno;</span><br><span class="line">	&#125;</span><br><span class="line">	public void setCno(int cno) &#123;</span><br><span class="line">		this.cno &#x3D; cno;</span><br><span class="line">	&#125;</span><br><span class="line">	public String getSname() &#123;</span><br><span class="line">		return sname;</span><br><span class="line">	&#125;</span><br><span class="line">	public void setSname(String sname) &#123;</span><br><span class="line">		this.sname &#x3D; sname;</span><br><span class="line">	&#125;</span><br><span class="line">	public String getPwd() &#123;</span><br><span class="line">		return pwd;</span><br><span class="line">	&#125;</span><br><span class="line">	public Login(String sname, String pwd) &#123;</span><br><span class="line">		this.sname &#x3D; sname;</span><br><span class="line">		this.pwd &#x3D; pwd;</span><br><span class="line">	&#125;</span><br><span class="line">	public Login() &#123;</span><br><span class="line">		super();</span><br><span class="line">	&#125;</span><br><span class="line">	public void setPwd(String pwd) &#123;</span><br><span class="line">		this.pwd &#x3D; pwd;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="logindao-java"><a href="#logindao-java" class="headerlink" title="logindao.java"></a>logindao.java</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">package dao;</span><br><span class="line"></span><br><span class="line">import java.sql.DriverManager;</span><br><span class="line">import java.sql.PreparedStatement;</span><br><span class="line">import java.sql.ResultSet;</span><br><span class="line">import java.sql.SQLException;</span><br><span class="line"></span><br><span class="line">import entity.Login;</span><br><span class="line"></span><br><span class="line">import java.sql.Connection;</span><br><span class="line">&#x2F;&#x2F;模型层:用于处理登录（查询数据）</span><br><span class="line">public class logindao &#123;</span><br><span class="line">	public static int login(Login login) &#123;</span><br><span class="line">		Connection con&#x3D;null;</span><br><span class="line">		PreparedStatement pstmt&#x3D;null;</span><br><span class="line">		ResultSet rs&#x3D; null;</span><br><span class="line">		try &#123;</span><br><span class="line">			Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span><br><span class="line">			String URL&#x3D;&quot;jdbc:mysql:&#x2F;&#x2F;127.0.0.1:3306&#x2F;learning?serverTimezone&#x3D;UCT&quot;;</span><br><span class="line">			String USERNAME&#x3D;&quot;root&quot;;</span><br><span class="line">			String PWD&#x3D;&quot;88888888&quot;;</span><br><span class="line">			con &#x3D;DriverManager.getConnection(URL,USERNAME,PWD);</span><br><span class="line">			&#x2F;&#x2F;数据表： create table student(sno varchar(255),sname varchar(255),pwd varchar(255));</span><br><span class="line">			String sql &#x3D; &quot;select count(*) from student where sname&#x3D;? and pwd &#x3D; ?;&quot;;</span><br><span class="line">			pstmt &#x3D; con.prepareStatement(sql);</span><br><span class="line">			pstmt.setString(1, login.getSname());</span><br><span class="line">			pstmt.setString(2,login.getPwd());</span><br><span class="line">			rs &#x3D; pstmt.executeQuery();</span><br><span class="line">			int count &#x3D;-1;</span><br><span class="line">			if(rs.next()) &#123;</span><br><span class="line">				count &#x3D; rs.getInt(1);</span><br><span class="line">			&#125;</span><br><span class="line">			if(count&gt;0) &#123;</span><br><span class="line">				return count;</span><br><span class="line">			&#125;else &#123;</span><br><span class="line">				return 0;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; catch (ClassNotFoundException e) &#123;</span><br><span class="line">			&#x2F;&#x2F; TODO Auto-generated catch block</span><br><span class="line">			return -1;</span><br><span class="line">		&#125; catch (SQLException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">			&#x2F;&#x2F; TODO Auto-generated catch block</span><br><span class="line">			return -1;</span><br><span class="line">		&#125;catch (Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">			&#x2F;&#x2F; TODO Auto-generated catch block</span><br><span class="line">			return -1;</span><br><span class="line">		&#125;finally &#123;</span><br><span class="line">			if(rs!&#x3D;null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					rs.close();</span><br><span class="line">				&#125; catch (SQLException e) &#123;</span><br><span class="line">					&#x2F;&#x2F; TODO Auto-generated catch block</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			if(con!&#x3D;null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					con.close();</span><br><span class="line">				&#125; catch (SQLException e) &#123;</span><br><span class="line">					&#x2F;&#x2F; TODO Auto-generated catch block</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			if(pstmt!&#x3D;null) &#123;</span><br><span class="line">				try &#123;</span><br><span class="line">					pstmt.close();</span><br><span class="line">				&#125; catch (SQLException e) &#123;</span><br><span class="line">					&#x2F;&#x2F; TODO Auto-generated catch block</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">					return -1;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="loginServlet-java"><a href="#loginServlet-java" class="headerlink" title="loginServlet.java"></a>loginServlet.java</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">package servletdemo;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import javax.servlet.ServletException;</span><br><span class="line">import javax.servlet.http.HttpServlet;</span><br><span class="line">import javax.servlet.http.HttpServletRequest;</span><br><span class="line">import javax.servlet.http.HttpServletResponse;</span><br><span class="line"></span><br><span class="line">import dao.logindao;</span><br><span class="line">import entity.Login;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;控制器层:接受view请求，并分发给Model处理</span><br><span class="line">public class loginServlet extends HttpServlet &#123;</span><br><span class="line">	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException &#123;</span><br><span class="line">		&#x2F;&#x2F; TODO Auto-generated method stub</span><br><span class="line"></span><br><span class="line">		request.setCharacterEncoding(&quot;UTF-8&quot;);</span><br><span class="line">		String name &#x3D; request.getParameter(&quot;name&quot;);</span><br><span class="line">		String pwd &#x3D; request.getParameter(&quot;pwd&quot;);</span><br><span class="line">		Login login &#x3D; new Login(name,pwd);</span><br><span class="line">		</span><br><span class="line">		int result &#x3D; logindao.login(login);</span><br><span class="line">		if(result&gt;0) &#123;</span><br><span class="line">			response.sendRedirect(&quot;welcome.jsp&quot;);</span><br><span class="line">		&#125;else if(result&#x3D;&#x3D;0) &#123;</span><br><span class="line">			response.sendRedirect(&quot;login.jsp&quot;);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException &#123;</span><br><span class="line">		&#x2F;&#x2F; TODO Auto-generated method stub</span><br><span class="line">		doGet(request, response);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="C:\Users\longxuan\AppData\Roaming\Typora\typora-user-images\image-20200914232440880.png" alt="image-20200914232440880"></p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2020/09/14/clobJDBC/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/09/16/text/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            (no title)
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/09/13/hello-world/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">一軒一世</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2020
+        <i class="ri-heart-fill heart_icon"></i> John Doe
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" target="_blank" rel="noopener" href="http://shenyu-vip.lofter.com">摄影</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2019/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>
